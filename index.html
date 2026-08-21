@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Template de Impressão — Botons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1C2530;
+  --ink-soft:#374357;
+  --paper:#FAFAF7;
+  --workspace:#E8EAEE;
+  --accent:#2F6F63;
+  --accent-soft:#DCEAE6;
+  --cut: #00000062;
+  --muted:#8992A3;
+  --border:#D8DCE3;
+}
+
+*{box-sizing:border-box;}
+
+html,body{
+  margin:0;
+  height:100%;
+  background:var(--workspace);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  color:var(--ink);
+}
+
+.app{
+  display:flex;
+  min-height:100vh;
+}
+
+/* ---------- SIDEBAR ---------- */
+.sidebar{
+  width:300px;
+  min-width:300px;
+  background:var(--ink);
+  color:#EDEFF3;
+  padding:28px 24px 24px;
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+}
+
+.brand{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.brand .mark{
+  font-family:'Space Grotesk','Inter',sans-serif;
+  font-weight:700;
+  font-size:20px;
+  letter-spacing:-0.01em;
+}
+
+.brand .mark span{ color:#8FBFB2; }
+
+.brand .sub{
+  font-size:12px;
+  color:#9AA4B5;
+  font-family:'IBM Plex Mono','Courier New',monospace;
+}
+
+.tabs{
+  display:flex;
+  gap:6px;
+  background:rgba(255,255,255,0.06);
+  padding:4px;
+  border-radius:10px;
+}
+
+.tab{
+  flex:1;
+  text-align:center;
+  padding:9px 4px;
+  border-radius:8px;
+  font-family:'IBM Plex Mono','Courier New',monospace;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  color:#B7BFCC;
+  transition:background .15s ease, color .15s ease;
+  user-select:none;
+}
+.tab:hover{ color:#fff; }
+.tab.active{
+  background:var(--accent);
+  color:#fff;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.field label{
+  font-size:12px;
+  color:#9AA4B5;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.field .row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.field input[type=number]{
+  width:70px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  color:#fff;
+  border-radius:8px;
+  padding:8px 10px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:14px;
+}
+.field input[type=number]:focus{ outline:2px solid var(--accent); }
+
+.btn{
+  border:none;
+  border-radius:9px;
+  padding:10px 14px;
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  font-size:13.5px;
+  cursor:pointer;
+  transition:transform .1s ease, opacity .15s ease;
+}
+.btn:active{ transform:scale(.97); }
+.btn-ghost{
+  background:rgba(255,255,255,0.08);
+  color:#EDEFF3;
+}
+.btn-ghost:hover{ background:rgba(255,255,255,0.14); }
+.btn-accent{
+  background:var(--accent);
+  color:#fff;
+}
+.btn-accent:hover{ opacity:.9; }
+.btn-print{
+  background:#EDEFF3;
+  color:var(--ink);
+  font-size:14.5px;
+  padding:13px 14px;
+}
+.btn-print:hover{ background:#fff; }
+.btn:focus-visible{ outline:2px solid #8FBFB2; outline-offset:2px; }
+
+.stat{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;
+  color:#9AA4B5;
+  line-height:1.6;
+}
+.stat b{ color:#EDEFF3; }
+
+.instructions{
+  font-size:12.5px;
+  line-height:1.6;
+  color:#AEB6C4;
+  border-top:1px solid rgba(255,255,255,0.1);
+  padding-top:16px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.instructions b{ color:#EDEFF3; }
+.instructions .tip{
+  background:rgba(255,255,255,0.06);
+  border-radius:8px;
+  padding:10px 12px;
+  font-size:12px;
+}
+
+.spacer{ flex:1; }
+
+/* ---------- WORKSPACE ---------- */
+.workspace{
+  flex:1;
+  overflow:auto;
+  padding:40px;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+}
+
+.page{
+  display:none;
+  width:210mm;
+  height:297mm;
+  min-width:210mm;
+  min-height:297mm;
+  background:var(--paper);
+  box-shadow:0 10px 40px rgba(28,37,48,0.25);
+  position:relative;
+  padding:8mm;
+  box-sizing:border-box;
+}
+.page.active{ display:block; }
+
+.page-label{
+  position:absolute;
+  top:3mm;
+  left:8mm;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:8.5px;
+  color:var(--muted);
+  letter-spacing:.03em;
+}
+
+.grid{
+  display:flex;
+  flex-wrap:wrap;
+  align-content:flex-start;
+  justify-content:center;
+  gap:4mm;
+  height:100%;
+  padding-top:6mm;
+}
+
+.slot-wrap{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.tick{
+  position:absolute;
+  background:var(--cut);
+  opacity:.55;
+}
+.tick-top{ top:0; left:50%; width:0.4mm; height:2.6mm; transform:translate(-50%,-100%); }
+.tick-bottom{ bottom:0; left:50%; width:0.4mm; height:2.6mm; transform:translate(-50%,100%); }
+.tick-left{ left:0; top:50%; height:0.4mm; width:2.6mm; transform:translate(-100%,-50%); }
+.tick-right{ right:0; top:50%; height:0.4mm; width:2.6mm; transform:translate(100%,-50%); }
+
+.slot {
+  position:relative;
+  border-radius:50%;
+  border:0.35mm dashed var(--cut);
+  background-color:#fff;
+  background-repeat:no-repeat;
+  cursor:pointer;
+  overflow:hidden;
+  image-rendering: -webkit-optimize-contrast; 
+  image-rendering: high-quality;
+}
+
+.slot.active-target {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+  z-index: 5; /* Garante que a borda fique por cima dos itens vizinhos */
+}
+
+.slot.filled{ cursor:grab; }
+.slot.filled:active{ cursor:grabbing; }
+
+.safe-ring{
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  border:0.3mm solid var(--cut);
+  pointer-events:none;
+}
+
+.upload-hint{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  color:var(--muted);
+  pointer-events:none;
+  text-align:center;
+  padding:8%;
+}
+.upload-hint .plus{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:20px;
+  line-height:1;
+  color:#B9C0CC;
+}
+.upload-hint .txt{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:8.5px;
+}
+.upload-hint .sz{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:7.5px;
+  color:#C7CCD5;
+  margin-top:4px;
+}
+
+.slot.drag-over{ border-color:var(--accent); background-color:var(--accent-soft); }
+
+.remove-btn{
+  position:absolute;
+  top:4px; right:4px;
+  width:18px; height:18px;
+  border-radius:50%;
+  background:rgba(28,37,48,0.75);
+  color:#fff;
+  border:none;
+  font-size:11px;
+  line-height:18px;
+  text-align:center;
+  cursor:pointer;
+  display:none;
+  z-index:2;
+}
+.slot-wrap:hover .remove-btn{ display:block; }
+
+.toolbar{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+}
+.mini-btn{
+  width:100%;
+  text-align:left;
+  background:rgba(255,255,255,0.08);
+}
+.mini-btn:hover{ background:rgba(255,255,255,0.14); }
+
+.no-print{}
+
+@media print{
+  html, body {
+    background:#fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body *{ visibility:hidden; }
+  .app, .workspace{ background:#fff !important; padding:0 !important; margin:0 !important; }
+  .page.active, .page.active *{ visibility:visible; }
+  .page.active{
+    display:block;
+    position:absolute;
+    top:0; left:0;
+    box-shadow:none;
+    margin:0;
+    break-inside: avoid;
+  }
+  .page{ page-break-inside: avoid; }
+  .sidebar, .no-print{ display:none !important; }
+  .safe-ring, .upload-hint, .remove-btn{ display:none !important; }
+  .workspace{ overflow:visible; display:block; padding:0; }
+  .slot{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  @page{ size:A4 portrait; margin:0; }
+}
+
+@media (max-width:820px){
+  .app{ flex-direction:column; }
+  .sidebar{ width:100%; min-width:0; }
+  .workspace{ padding:20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar no-print">
+    <div class="brand">
+      <div class="mark">Folha<span>Botons</span></div>
+      <div class="sub">template de impressão A4</div>
+    </div>
+
+    <div class="tabs" id="tabs"></div>
+
+    <div class="field">
+      <label>Margem de corte (mm)</label>
+      <div class="row">
+        <input type="number" id="bleedInput" min="1" max="60" step="0.5">
+        <button class="btn btn-ghost" id="applyBleed">Aplicar</button>
+      </div>
+    </div>
+
+    <div class="stat" id="statBox"></div>
+
+    <div class="toolbar no-print">
+      <button class="btn btn-ghost mini-btn" id="fitSelected">Ajustar imagem</button>
+      <button class="btn btn-ghost mini-btn" id="centerSelected">Centralizar</button>
+      <button class="btn btn-ghost mini-btn" id="resetSelected">Resetar zoom</button>
+      <button class="btn btn-ghost mini-btn" id="duplicateSelected">Duplicar em vazios</button>
+    </div>
+
+    <button class="btn btn-ghost" id="saveProject">Salvar projeto</button>
+    <button class="btn btn-ghost" id="loadProject">Carregar última</button>
+    <button class="btn btn-ghost" id="clearAll">Limpar imagens desta folha</button>
+    <button class="btn btn-accent" id="exportPdf">Exportar PDF</button>
+
+    <div class="spacer"></div>
+
+    <div class="instructions">
+      <div><b>Como usar</b></div>
+      <div>1. Escolha o tamanho do botton nas abas acima.</div>
+      <div>2. Clique num círculo (ou arraste uma imagem) para colocar sua arte.</div>
+      <div>3. Role o scroll sobre o círculo pra dar zoom, e arraste pra reposicionar.</div>
+      <div>4. Mantenha os elementos importantes dentro do círculo cinza interno — é a área que fica visível depois de prensado.</div>
+    </div>
+
+    <button class="btn btn-print" id="printBtn">🖨 Imprimir esta folha</button>
+  </aside>
+
+  <main class="workspace" id="workspace"></main>
+</div>
+
+<input type="file" id="fileInput" accept="image/*" style="display:none">
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const SIZES = [
+  { key:'25', label:'25mm', final:25, bleed:35 },
+  { key:'32', label:'32mm', final:32, bleed:44 },
+  { key:'55', label:'55mm', final:55, bleed:70 },
+];
+
+const PAGE_W = 210, PAGE_H = 297, MARGIN = 8, GAP = 4, HEADER = 6;
+
+const STORAGE_KEY = 'folha-botons-project-v1';
+
+const state = {};
+SIZES.forEach(s => {
+  state[s.key] = { bleed: s.bleed, cols:0, rows:0, count:0, images:[] };
+});
+
+let activeKey = SIZES[0].key;
+let activeUploadIndex = null;
+
+const workspace = document.getElementById('workspace');
+const tabsEl = document.getElementById('tabs');
+const bleedInput = document.getElementById('bleedInput');
+const statBox = document.getElementById('statBox');
+const fileInput = document.getElementById('fileInput');
+
+function clamp(value, min, max){ return Math.min(max, Math.max(min, value)); }
+
+function cloneImageData(data){
+  if(!data) return null;
+  return { ...data };
+}
+
+function computeGrid(bleed){
+  const usableW = PAGE_W - MARGIN * 2;
+  const usableH = PAGE_H - MARGIN * 2 - HEADER;
+  const slotSize = bleed + 3;
+  const cols = Math.max(1, Math.floor((usableW + GAP) / (slotSize + GAP)));
+  const rows = Math.max(1, Math.floor((usableH + GAP) / (slotSize + GAP)));
+  return { cols, rows, count: cols * rows };
+}
+
+function getActiveImageTarget(){
+  if(!activeUploadIndex) return null;
+  const { sizeKey, index } = activeUploadIndex;
+  const st = state[sizeKey];
+  if(!st || !st.images[index]) return null;
+  return { sizeKey, index, data: st.images[index] };
+}
+
+function setImageTransform(sizeKey, index, updates){
+  const current = state[sizeKey].images[index];
+  if(!current) return;
+  Object.assign(current, updates);
+  const slot = document.querySelector(`#page-${sizeKey} .slot[data-index="${index}"]`);
+  if(slot){
+    slot.style.backgroundSize = `${current.baseW * current.zoom / 100}% ${current.baseH * current.zoom / 100}%`;
+    slot.style.backgroundPosition = `${current.posX}% ${current.posY}%`;
+  }
+}
+
+function fitSelectedImage(){
+  const target = getActiveImageTarget();
+  if(!target) return;
+  const { sizeKey, index, data } = target;
+  const fitZoom = clamp((100 / Math.max(data.baseW, data.baseH)) * 100, 30, 300);
+  setImageTransform(sizeKey, index, { zoom: fitZoom, posX: 50, posY: 50 });
+}
+
+function centerSelectedImage(){
+  const target = getActiveImageTarget();
+  if(!target) return;
+  const { sizeKey, index } = target;
+  setImageTransform(sizeKey, index, { posX: 50, posY: 50 });
+}
+
+function resetSelectedImage(){
+  const target = getActiveImageTarget();
+  if(!target) return;
+  const { sizeKey, index } = target;
+  setImageTransform(sizeKey, index, { zoom: 100, posX: 50, posY: 50 });
+}
+
+function duplicateSelectedImageToAll(){
+  const target = getActiveImageTarget();
+  if(!target) return;
+  const { sizeKey, index, data } = target;
+  const st = state[sizeKey];
+  let replaced = 0;
+  st.images = st.images.map((slotData, slotIndex) => {
+    if(slotIndex === index) return slotData;
+    if(!slotData){
+      replaced += 1;
+      return cloneImageData(data);
+    }
+    return slotData;
+  });
+  buildPage(sizeKey);
+  updateStat();
+  if(replaced > 0){
+    alert(`${replaced} slot(s) vazios foram preenchidos com a mesma arte.`);
+  } else {
+    alert('Não havia slots vazios nesta folha para duplicar a arte.');
+  }
+}
+
+function saveProject(){
+  try {
+    const snapshot = {
+      activeKey,
+      sizes: SIZES.map(size => ({
+        key: size.key,
+        bleed: state[size.key].bleed,
+        images: state[size.key].images.map(img => img ? { ...img } : null)
+      }))
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+    return true;
+  } catch (error) {
+    console.warn('Não foi possível salvar o projeto:', error);
+    return false;
+  }
+}
+
+function loadProject(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(!raw) {
+    return false;
+  }
+  try {
+    const snapshot = JSON.parse(raw);
+    if(!snapshot || !Array.isArray(snapshot.sizes)) return false;
+    snapshot.sizes.forEach(({ key, bleed, images }) => {
+      if(!state[key]) return;
+      state[key].bleed = Number(bleed) || state[key].bleed;
+      state[key].images = Array.isArray(images) ? images.map(img => img ? { ...img } : null) : [];
+      const g = computeGrid(state[key].bleed);
+      state[key].cols = g.cols; state[key].rows = g.rows; state[key].count = g.count;
+      if(state[key].images.length !== state[key].count){
+        const old = state[key].images;
+        state[key].images = new Array(state[key].count).fill(null).map((_, i) => old[i] || null);
+      }
+      buildPage(key);
+    });
+    if(snapshot.activeKey && state[snapshot.activeKey]) {
+      activeKey = snapshot.activeKey;
+    }
+    setActive(activeKey);
+    updateStat();
+    return true;
+  } catch (error) {
+    console.error('Erro ao carregar projeto salvo:', error);
+    return false;
+  }
+}
+
+function exportCurrentPagePdf(){
+  if(!window.html2canvas || !window.jspdf || !window.jspdf.jsPDF){
+    alert('A biblioteca de exportação não carregou. Tente novamente em instantes.');
+    return;
+  }
+  const page = document.getElementById('page-' + activeKey);
+  if(!page) return;
+  const button = document.getElementById('exportPdf');
+  const previousText = button.textContent;
+  button.textContent = 'Gerando...';
+  button.disabled = true;
+
+  html2canvas(page, {
+    backgroundColor: '#FAFAF7',
+    scale: 2,
+    useCORS: true,
+    logging: false
+  }).then(canvas => {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const imgProps = pdf.getImageProperties(imgData);
+    const ratio = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
+    const imgWidth = imgProps.width * ratio;
+    const imgHeight = imgProps.height * ratio;
+    const x = (pdfWidth - imgWidth) / 2;
+    const y = (pdfHeight - imgHeight) / 2;
+
+    pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+    pdf.save(`botons-${activeKey}.pdf`);
+  }).catch(() => {
+    alert('Não foi possível exportar o PDF. Tente novamente.');
+  }).finally(() => {
+    button.textContent = previousText;
+    button.disabled = false;
+  });
+}
+
+function buildPage(sizeKey){
+  const size = SIZES.find(s => s.key === sizeKey);
+  const st = state[sizeKey];
+  const g = computeGrid(st.bleed);
+  st.cols = g.cols; st.rows = g.rows; st.count = g.count;
+  if(st.images.length !== st.count){
+    const old = st.images;
+    st.images = new Array(st.count).fill(null).map((_,i)=> old[i] || null);
+  }
+
+  let page = document.getElementById('page-'+sizeKey);
+  if(!page){
+    page = document.createElement('div');
+    page.className = 'page';
+    page.id = 'page-'+sizeKey;
+    workspace.appendChild(page);
+  }
+  page.innerHTML = '';
+
+  const label = document.createElement('div');
+  label.className = 'page-label';
+  label.textContent = `Botons ${size.label} · corte ${st.bleed}mm · ${st.count} unidades`;
+  page.appendChild(label);
+
+  const grid = document.createElement('div');
+  grid.className = 'grid';
+
+  const finalPct = (size.final / st.bleed) * 100;
+
+  for(let i=0;i<st.count;i++){
+    const wrap = document.createElement('div');
+    wrap.className = 'slot-wrap';
+    wrap.style.width = (st.bleed + 3) + 'mm';
+    wrap.style.height = (st.bleed + 3) + 'mm';
+
+    ['top','bottom','left','right'].forEach(dir=>{
+      const t = document.createElement('div');
+      t.className = 'tick tick-'+dir;
+      wrap.appendChild(t);
+    });
+
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+    slot.style.width = st.bleed + 'mm';
+    slot.style.height = st.bleed + 'mm';
+    slot.dataset.index = i;
+
+    const ring = document.createElement('div');
+    ring.className = 'safe-ring';
+    ring.style.width = finalPct + '%';
+    ring.style.height = finalPct + '%';
+    slot.appendChild(ring);
+
+    const hint = document.createElement('div');
+    hint.className = 'upload-hint';
+    hint.innerHTML = `<div class="plus">+</div><div class="txt">solte a imagem</div><div class="sz">${size.final}mm visível</div>`;
+    slot.appendChild(hint);
+
+    const imgData = st.images[i];
+    if(imgData){ applySlotImage(slot, imgData); }
+
+    attachSlotEvents(slot, sizeKey, i);
+
+    wrap.appendChild(slot);
+
+    const rm = document.createElement('button');
+    rm.className = 'remove-btn';
+    rm.textContent = '×';
+    rm.title = 'Remover imagem';
+    rm.addEventListener('click', (e)=>{ e.stopPropagation(); setImage(sizeKey, i, null); });
+    if(!imgData) rm.style.display = 'none';
+    wrap.appendChild(rm);
+
+    grid.appendChild(wrap);
+  }
+
+  page.appendChild(grid);
+}
+
+function applySlotImage(slot, imgData){
+  slot.classList.add('filled');
+  slot.style.backgroundImage = `url(${imgData.src})`;
+  slot.style.backgroundSize = `${imgData.baseW * imgData.zoom / 100}% ${imgData.baseH * imgData.zoom / 100}%`;
+  slot.style.backgroundPosition = `${imgData.posX}% ${imgData.posY}%`;
+  const hint = slot.querySelector('.upload-hint');
+  if(hint) hint.style.display = 'none';
+}
+
+function setImage(sizeKey, index, data){
+  state[sizeKey].images[index] = data;
+  buildPage(sizeKey);
+  updateStat();
+}
+
+function attachSlotEvents(slot, sizeKey, index){
+  slot.addEventListener('click', (e)=>{
+    activeUploadIndex = { sizeKey, index };
+    if(slot.classList.contains('filled')) return;
+    fileInput.click();
+  });
+
+  slot.addEventListener('dragover', (e)=>{ e.preventDefault(); slot.classList.add('drag-over'); });
+  slot.addEventListener('dragleave', ()=> slot.classList.remove('drag-over'));
+  slot.addEventListener('drop', (e)=>{
+    e.preventDefault();
+    slot.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if(file) loadFile(file, sizeKey, index);
+    activeUploadIndex = { sizeKey, index };
+  });
+
+  let dragging = false, startX=0, startY=0, startPosX=50, startPosY=50;
+  slot.addEventListener('pointerdown', (e)=>{
+    if(!slot.classList.contains('filled')) return;
+    dragging = true;
+    activeUploadIndex = { sizeKey, index };
+    startX = e.clientX; startY = e.clientY;
+    const data = state[sizeKey].images[index];
+    startPosX = data.posX; startPosY = data.posY;
+    slot.setPointerCapture(e.pointerId);
+  });
+  slot.addEventListener('pointermove', (e)=>{
+    if(!dragging) return;
+    const data = state[sizeKey].images[index];
+    const rect = slot.getBoundingClientRect();
+    const dx = (e.clientX - startX) / rect.width * 100;
+    const dy = (e.clientY - startY) / rect.height * 100;
+    data.posX = clamp(startPosX - dx, 0, 100);
+    data.posY = clamp(startPosY - dy, 0, 100);
+    slot.style.backgroundPosition = `${data.posX}% ${data.posY}%`;
+  });
+  slot.addEventListener('pointerup', ()=> dragging = false);
+  slot.addEventListener('pointerleave', ()=> dragging = false);
+
+  slot.addEventListener('wheel', (e)=>{
+    if(!slot.classList.contains('filled')) return;
+    e.preventDefault();
+    const data = state[sizeKey].images[index];
+    data.zoom = clamp(data.zoom - e.deltaY * 0.08, 30, 400);
+    slot.style.backgroundSize = `${data.baseW * data.zoom / 100}% ${data.baseH * data.zoom / 100}%`;
+    activeUploadIndex = { sizeKey, index };
+  }, { passive:false });
+}
+
+function loadFile(file, sizeKey, index){
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    const src = e.target.result;
+    const img = new Image();
+    img.onload = ()=>{
+      const maxSide = 2400;
+      const scale = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+      canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      const imageType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+      const processedSrc = canvas.toDataURL(imageType, imageType === 'image/png' ? 0.92 : 0.9);
+
+      let baseW, baseH;
+      if(img.naturalWidth >= img.naturalHeight){
+        baseW = (img.naturalWidth / img.naturalHeight) * 100;
+        baseH = 100;
+      } else {
+        baseW = 100;
+        baseH = (img.naturalHeight / img.naturalWidth) * 100;
+      }
+
+      setImage(sizeKey, index, { src: processedSrc, baseW, baseH, zoom: 100, posX: 50, posY: 50 });
+      activeUploadIndex = { sizeKey, index };
+    };
+    img.src = src;
+  };
+  reader.readAsDataURL(file);
+}
+
+fileInput.addEventListener('change', ()=>{
+  const file = fileInput.files[0];
+  if(file && activeUploadIndex){
+    loadFile(file, activeUploadIndex.sizeKey, activeUploadIndex.index);
+  }
+  fileInput.value = '';
+});
+
+function updateStat(){
+  const st = state[activeKey];
+  const filled = st.images.filter(Boolean).length;
+  statBox.innerHTML = `<b>${st.count}</b> círculos nesta folha (${st.cols}×${st.rows})<br><b>${filled}</b> já preenchidos`;
+}
+
+function setActive(key){
+  activeKey = key;
+  [...tabsEl.children].forEach(t => t.classList.toggle('active', t.dataset.key === key));
+  [...workspace.children].forEach(p => p.classList.toggle('active', p.id === 'page-'+key));
+  bleedInput.value = state[key].bleed;
+  updateStat();
+}
+
+SIZES.forEach(s=>{
+  const tab = document.createElement('div');
+  tab.className = 'tab';
+  tab.textContent = s.label;
+  tab.dataset.key = s.key;
+  tab.addEventListener('click', ()=> setActive(s.key));
+  tabsEl.appendChild(tab);
+  buildPage(s.key);
+});
+
+document.getElementById('applyBleed').addEventListener('click', ()=>{
+  const val = parseFloat(bleedInput.value);
+  if(!val || val <= 0) return;
+  const st = state[activeKey];
+  const hasImages = st.images.some(Boolean);
+  if(hasImages && !confirm('Mudar a margem vai limpar as imagens já colocadas nesta folha. Continuar?')) return;
+  st.bleed = clamp(val, 1, 60);
+  st.images = [];
+  buildPage(activeKey);
+  updateStat();
+});
+
+document.getElementById('fitSelected').addEventListener('click', fitSelectedImage);
+document.getElementById('centerSelected').addEventListener('click', centerSelectedImage);
+document.getElementById('resetSelected').addEventListener('click', resetSelectedImage);
+document.getElementById('duplicateSelected').addEventListener('click', duplicateSelectedImageToAll);
+document.getElementById('saveProject').addEventListener('click', ()=>{
+  if(saveProject()) {
+    alert('Projeto salvo no navegador.');
+  } else {
+    alert('Não foi possível salvar o projeto no navegador. Tente limpar algumas imagens grandes ou salvar em outro momento.');
+  }
+});
+document.getElementById('loadProject').addEventListener('click', ()=>{
+  if(loadProject()) {
+    alert('Projeto restaurado com sucesso.');
+  } else {
+    alert('Ainda não há projeto salvo no navegador.');
+  }
+});
+
+document.getElementById('clearAll').addEventListener('click', ()=>{
+  if(!confirm('Limpar todas as imagens desta folha?')) return;
+  state[activeKey].images = [];
+  buildPage(activeKey);
+  updateStat();
+  saveProject();
+});
+
+document.getElementById('exportPdf').addEventListener('click', exportCurrentPagePdf);
+document.getElementById('printBtn').addEventListener('click', ()=> window.print());
+
+window.addEventListener('beforeunload', saveProject);
+
+setActive(SIZES[0].key);
+loadProject();
+</script>
+
+</body>
+</html>
